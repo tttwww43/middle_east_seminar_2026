@@ -14,42 +14,32 @@
    1. GLOBAL & DESIGN TOKENS
 ===================================================== */
 :root{
-  /* Primary Palette - Sophisticated Medical/Academic */
   --cream:#F5F1EB;
   --warm-white:#FAF9F7;
   --sand:#E8E0D5;
   --camel:#C4A77D;
   --camel-deep:#8B7355;
   
-  /* Accents - Professional Medical */
   --navy:#1A2B3C;
   --navy-light:#2C3E50;
   --sage:#8FA396;
-  --sage-light:#B8C4B8;
   --terracotta:#C67B5C;
-  --terracotta-light:#D99A7E;
   
-  /* Functional */
   --ink:#1F2F3A;
   --ink-light:#4A5568;
   --muted:#718096;
   --border:rgba(31,47,58,0.08);
-  --border-light:rgba(31,47,58,0.04);
   
-  /* Effects */
   --glass: rgba(245,241,235,0.85);
-  --glass-dark: rgba(26,43,60,0.95);
   --radius:4px;
   --radius-lg:12px;
   --shadow-sm: 0 2px 8px rgba(31,47,58,0.04);
   --shadow-md: 0 8px 24px rgba(31,47,58,0.08);
   --shadow-lg: 0 20px 48px rgba(31,47,58,0.12);
   
-  /* Typography Scale */
   --font-serif: 'Cormorant Garamond', Georgia, serif;
   --font-sans: 'Inter', -apple-system, sans-serif;
   
-  /* Spacing Scale */
   --space-xs: 0.5rem;
   --space-sm: 1rem;
   --space-md: 1.5rem;
@@ -78,31 +68,187 @@ body{
 }
 
 /* =====================================================
-   2. VIDEO OPENING - Cinematic Editorial
+   2. VIDEO OPENING - With Animated Dice
 ===================================================== */
 .video-opening{
   position:fixed;
   inset:0;
-  background:var(--navy);
+  background:linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0f1419 100%);
   z-index:9999;
   display:flex;
   align-items:center;
   justify-content:center;
   transition:opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s;
+  overflow:hidden;
 }
 .video-opening.hidden{
   opacity:0;
   visibility:hidden;
   pointer-events:none;
 }
-.video-bg{
+
+/* Background Pattern */
+.opening-bg{
+  position:absolute;
+  inset:0;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(196,167,125,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(198,123,92,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(143,163,150,0.05) 0%, transparent 40%);
+  animation:bgPulse 8s ease-in-out infinite;
+}
+
+@keyframes bgPulse{
+  0%, 100%{opacity:0.5;}
+  50%{opacity:1;}
+}
+
+/* Dice Container */
+.dice-container{
+  position:relative;
+  width:400px;
+  height:400px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  perspective:1000px;
+  z-index:2;
+}
+
+/* Individual Die */
+.die{
+  width:80px;
+  height:80px;
+  position:absolute;
+  transform-style:preserve-3d;
+  animation:rollDice 3s ease-out forwards;
+}
+
+.die:nth-child(1){
+  animation-delay:0.2s;
+  top:30%;
+  left:30%;
+}
+.die:nth-child(2){
+  animation-delay:0.5s;
+  top:40%;
+  right:25%;
+  width:60px;
+  height:60px;
+}
+.die:nth-child(3){
+  animation-delay:0.8s;
+  bottom:30%;
+  left:35%;
+  width:70px;
+  height:70px;
+}
+
+/* Die Faces */
+.face{
   position:absolute;
   width:100%;
   height:100%;
-  object-fit:cover;
-  opacity:0.9;
+  background:linear-gradient(145deg, #f5f1eb 0%, #e8e0d5 100%);
+  border:2px solid #d4c4b0;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:inset 0 0 20px rgba(0,0,0,0.1), 0 10px 30px rgba(0,0,0,0.3);
+  backface-visibility:hidden;
 }
 
+.face::before{
+  content:'';
+  position:absolute;
+  inset:8px;
+  border:1px solid rgba(196,167,125,0.3);
+  border-radius:8px;
+}
+
+/* Dots/Pips */
+.pip{
+  width:12px;
+  height:12px;
+  background:var(--navy);
+  border-radius:50%;
+  position:absolute;
+  box-shadow:inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.pip.center{top:50%;left:50%;transform:translate(-50%,-50%);}
+.pip.top-left{top:20%;left:20%;}
+.pip.top-right{top:20%;right:20%;}
+.pip.middle-left{top:50%;left:20%;transform:translateY(-50%);}
+.pip.middle-right{top:50%;right:20%;transform:translateY(-50%);}
+.pip.bottom-left{bottom:20%;left:20%;}
+.pip.bottom-right{bottom:20%;right:20%;}
+
+/* Face Transforms */
+.face.front{transform:translateZ(40px);}
+.face.back{transform:rotateY(180deg) translateZ(40px);}
+.face.right{transform:rotateY(90deg) translateZ(40px);}
+.face.left{transform:rotateY(-90deg) translateZ(40px);}
+.face.top{transform:rotateX(90deg) translateZ(40px);}
+.face.bottom{transform:rotateX(-90deg) translateZ(40px);}
+
+/* Smaller dice adjustments */
+.die:nth-child(2) .face{box-shadow:inset 0 0 15px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.3);}
+.die:nth-child(2) .pip{width:9px;height:9px;}
+.die:nth-child(3) .pip{width:10px;height:10px;}
+
+/* Dice Roll Animation */
+@keyframes rollDice{
+  0%{
+    transform:rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateY(-200px) scale(0.5);
+    opacity:0;
+  }
+  20%{
+    opacity:1;
+  }
+  60%{
+    transform:rotateX(720deg) rotateY(540deg) rotateZ(360deg) translateY(50px) scale(1.1);
+  }
+  100%{
+    transform:rotateX(1080deg) rotateY(810deg) rotateZ(720deg) translateY(0) scale(1);
+  }
+}
+
+/* Floating Animation After Roll */
+.die.floating{
+  animation:float 4s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%, 100%{transform:translateY(0) rotateX(10deg) rotateY(10deg);}
+  25%{transform:translateY(-15px) rotateX(15deg) rotateY(-10deg);}
+  50%{transform:translateY(-5px) rotateX(-5deg) rotateY(15deg);}
+  75%{transform:translateY(-20px) rotateX(10deg) rotateY(5deg);}
+}
+
+/* Shadow under dice */
+.die::after{
+  content:'';
+  position:absolute;
+  width:60px;
+  height:10px;
+  background:rgba(0,0,0,0.2);
+  border-radius:50%;
+  bottom:-30px;
+  left:50%;
+  transform:translateX(-50%);
+  filter:blur(8px);
+  animation:shadowScale 3s ease-out forwards;
+}
+
+@keyframes shadowScale{
+  0%{transform:translateX(-50%) scale(0);opacity:0;}
+  60%{transform:translateX(-50%) scale(1.2);opacity:0.3;}
+  100%{transform:translateX(-50%) scale(1);opacity:0.2;}
+}
+
+/* Language Toggle */
 .opening-lang{
   position:absolute;
   top:var(--space-lg);
@@ -112,8 +258,9 @@ body{
   backdrop-filter:blur(20px);
   border-radius:100px;
   padding:6px;
-  box-shadow:var(--shadow-lg);
+  box-shadow:0 20px 50px rgba(0,0,0,0.3);
   border:1px solid rgba(255,255,255,0.2);
+  animation:fadeInDown 1s ease 2s backwards;
 }
 .lang-pill{
   display:flex;
@@ -142,9 +289,10 @@ body{
   box-shadow:0 4px 12px rgba(26,43,60,0.2);
 }
 
+/* Title */
 .video-title{
   position:absolute;
-  bottom:15%;
+  bottom:12%;
   left:50%;
   transform:translateX(-50%);
   text-align:center;
@@ -152,32 +300,36 @@ body{
   z-index:3;
   padding:0 var(--space-lg);
   max-width:900px;
+  animation:fadeInUp 1s ease 2.5s backwards;
 }
 .video-title h1{
   font-family:var(--font-serif);
-  font-size:clamp(2rem, 5vw, 3.5rem);
+  font-size:clamp(1.8rem, 4vw, 3rem);
   font-weight:500;
   letter-spacing:-0.02em;
   line-height:1.2;
   margin-bottom:var(--space-sm);
-  opacity:0;
-  animation:fadeUp 1s ease 0.5s forwards;
+  opacity:0.95;
 }
 .video-title p{
-  font-size:clamp(0.9rem, 1.5vw, 1.1rem);
-  opacity:0;
+  font-size:clamp(0.85rem, 1.5vw, 1rem);
+  opacity:0.7;
   font-weight:400;
-  letter-spacing:0.1em;
+  letter-spacing:0.15em;
   text-transform:uppercase;
-  animation:fadeUp 1s ease 0.8s forwards;
 }
 
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(20px);}
-  to{opacity:0.9;transform:translateY(0);}
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateX(-50%) translateY(30px);}
+  to{opacity:1;transform:translateX(-50%) translateY(0);}
 }
 
-/* Skip button */
+@keyframes fadeInDown{
+  from{opacity:0;transform:translateY(-20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* Skip Button */
 .skip-opening{
   position:absolute;
   bottom:var(--space-lg);
@@ -193,14 +345,58 @@ body{
   text-transform:uppercase;
   transition:all 0.3s ease;
   z-index:10;
+  animation:fadeIn 1s ease 3s backwards;
 }
 .skip-opening:hover{
   background:rgba(255,255,255,0.2);
   border-color:rgba(255,255,255,0.5);
 }
 
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+
+/* Decorative Elements */
+.decor-circle{
+  position:absolute;
+  border:1px solid rgba(196,167,125,0.2);
+  border-radius:50%;
+  animation:rotate 20s linear infinite;
+}
+.decor-circle:nth-child(1){
+  width:600px;
+  height:600px;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
+.decor-circle:nth-child(2){
+  width:500px;
+  height:500px;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  animation-direction:reverse;
+  animation-duration:15s;
+}
+.decor-circle:nth-child(3){
+  width:700px;
+  height:700px;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  border-color:rgba(198,123,92,0.15);
+  animation-duration:25s;
+}
+
+@keyframes rotate{
+  from{transform:translate(-50%,-50%) rotate(0deg);}
+  to{transform:translate(-50%,-50%) rotate(360deg);}
+}
+
 /* =====================================================
-   3. NAVIGATION - Minimal Editorial
+   3. NAVIGATION
 ===================================================== */
 nav{
   position:fixed;
@@ -316,7 +512,7 @@ nav{
 }
 
 /* =====================================================
-   4. HERO - Editorial Layout
+   4. HERO
 ===================================================== */
 .hero{
   min-height:100vh;
@@ -517,7 +713,7 @@ nav{
 }
 
 /* =====================================================
-   5. SECTIONS - Editorial Spacing
+   5. SECTIONS
 ===================================================== */
 section.content{
   padding:var(--space-3xl) 0;
@@ -571,7 +767,7 @@ section.content:nth-child(even){
   max-width:700px;
 }
 
-/* Cards - Editorial Style */
+/* Cards */
 .cards-row{
   display:grid;
   grid-template-columns:repeat(3, 1fr);
@@ -629,7 +825,7 @@ section.content:nth-child(even){
   font-size:0.95rem;
 }
 
-/* Program List - Timeline Style */
+/* Program List */
 .program-list{
   margin-top:var(--space-xl);
   display:flex;
@@ -682,7 +878,7 @@ section.content:nth-child(even){
   line-height:1.6;
 }
 
-/* Map - Editorial Frame */
+/* Map */
 .map-wrap{
   position:relative;
   border-radius:var(--radius-lg);
@@ -715,7 +911,7 @@ section.content:nth-child(even){
   transform:translateY(-2px);
 }
 
-/* Links Grid - Minimal Cards */
+/* Links Grid */
 .links-grid{
   display:grid;
   grid-template-columns:repeat(4, 1fr);
@@ -783,7 +979,7 @@ section.content:nth-child(even){
   opacity:0.8;
 }
 
-/* Contact Section */
+/* Contact */
 .contact-grid{
   display:grid;
   grid-template-columns:repeat(2, 1fr);
@@ -803,7 +999,7 @@ section.content:nth-child(even){
   font-weight:500;
 }
 
-/* Footer - Minimal */
+/* Footer */
 footer{
   text-align:center;
   padding:var(--space-xl) 0;
@@ -864,6 +1060,19 @@ footer{
   .program-item{
     grid-template-columns:80px 1fr;
   }
+  
+  /* Dice adjustments for mobile */
+  .dice-container{
+    width:300px;
+    height:300px;
+  }
+  .die{
+    width:60px;
+    height:60px;
+  }
+  .die:nth-child(1){top:25%;left:20%;}
+  .die:nth-child(2){top:35%;right:15%;}
+  .die:nth-child(3){bottom:25%;left:25%;}
 }
 
 @media(max-width:768px){
@@ -917,6 +1126,16 @@ footer{
     padding-left:0;
     border-left:none;
   }
+  
+  /* Mobile dice */
+  .dice-container{
+    width:250px;
+    height:250px;
+  }
+  .die{
+    width:50px;
+    height:50px;
+  }
 }
 
 @media(max-width:480px){
@@ -935,17 +1154,149 @@ footer{
     width:100%;
     justify-content:center;
   }
+  
+  /* Small mobile dice */
+  .dice-container{
+    width:200px;
+    height:200px;
+  }
+  .die{
+    width:40px;
+    height:40px;
+  }
+  .pip{
+    width:8px;
+    height:8px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- VIDEO OPENING -->
+<!-- VIDEO OPENING WITH ANIMATED DICE -->
 <div id="videoOpening" class="video-opening">
-  <video id="openingVideo" class="video-bg" autoplay muted playsinline>
-    <source src="assets/opening.mp4" type="video/mp4">
-  </video>
+  <!-- Background Effects -->
+  <div class="opening-bg"></div>
+  <div class="decor-circle"></div>
+  <div class="decor-circle"></div>
+  <div class="decor-circle"></div>
+  
+  <!-- Animated Dice -->
+  <div class="dice-container" id="diceContainer">
+    <!-- Die 1 -->
+    <div class="die" id="die1">
+      <div class="face front"><div class="pip center"></div></div>
+      <div class="face back">
+        <div class="pip top-left"></div>
+        <div class="pip top-right"></div>
+        <div class="pip middle-left"></div>
+        <div class="pip middle-right"></div>
+        <div class="pip bottom-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face right">
+        <div class="pip top-left"></div>
+        <div class="pip center"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face left">
+        <div class="pip top-left"></div>
+        <div class="pip top-right"></div>
+        <div class="pip bottom-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face top">
+        <div class="pip top-left"></div>
+        <div class="pip top-right"></div>
+        <div class="pip center"></div>
+        <div class="pip bottom-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face bottom">
+        <div class="pip top-left"></div>
+        <div class="pip top-right"></div>
+        <div class="pip middle-left"></div>
+        <div class="pip middle-right"></div>
+        <div class="pip bottom-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+    </div>
+    
+    <!-- Die 2 -->
+    <div class="die" id="die2">
+      <div class="face front">
+        <div class="pip top-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face back">
+        <div class="pip center"></div>
+      </div>
+      <div class="face right">
+        <div class="pip top-left"></div>
+        <div class="pip top-right"></div>
+        <div class="pip bottom-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face left">
+        <div class="pip top-left"></div>
+        <div class="pip center"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face top">
+        <div class="pip top-left"></div>
+        <div class="pip top-right"></div>
+        <div class="pip middle-left"></div>
+        <div class="pip middle-right"></div>
+        <div class="pip bottom-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face bottom">
+        <div class="pip top-left"></div>
+        <div class="pip top-right"></div>
+        <div class="pip center"></div>
+        <div class="pip bottom-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+    </div>
+    
+    <!-- Die 3 -->
+    <div class="die" id="die3">
+      <div class="face front">
+        <div class="pip top-left"></div>
+        <div class="pip center"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face back">
+        <div class="pip top-left"></div>
+        <div class="pip top-right"></div>
+        <div class="pip bottom-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face right">
+        <div class="pip center"></div>
+      </div>
+      <div class="face left">
+        <div class="pip top-left"></div>
+        <div class="pip top-right"></div>
+        <div class="pip middle-left"></div>
+        <div class="pip middle-right"></div>
+        <div class="pip bottom-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face top">
+        <div class="pip top-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face bottom">
+        <div class="pip top-left"></div>
+        <div class="pip top-right"></div>
+        <div class="pip center"></div>
+        <div class="pip bottom-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+    </div>
+  </div>
 
   <div class="opening-lang" aria-label="Language toggle">
     <div class="lang-pill" role="tablist" aria-label="EN/KR">
@@ -1310,30 +1661,36 @@ footer{
 </div>
 
 <script>
-/* ========= Video ========= */
-const opening = document.getElementById("videoOpening");
-const video = document.getElementById("openingVideo");
-const page = document.getElementById("page");
+/* ========= Dice Animation ========= */
+const dice = document.querySelectorAll('.die');
+const diceContainer = document.getElementById('diceContainer');
 
-function stopVideoHard(){
-  try{
-    video.pause();
-    video.currentTime = 0;
-    video.removeAttribute("src");
-    const srcEl = video.querySelector("source");
-    if(srcEl) srcEl.removeAttribute("src");
-    video.load();
-  } catch(e){}
-}
+// Add floating animation after roll completes
+setTimeout(() => {
+  dice.forEach((die, index) => {
+    die.style.animation = 'none';
+    die.offsetHeight; /* Trigger reflow */
+    die.style.animation = `float ${4 + index * 0.5}s ease-in-out infinite`;
+    die.style.animationDelay = `${index * 0.3}s`;
+  });
+}, 3000);
+
+/* ========= Opening Sequence ========= */
+const opening = document.getElementById("videoOpening");
+const page = document.getElementById("page");
 
 function endOpening(){
   page.style.opacity = "1";
-  stopVideoHard();
   opening.classList.add("hidden");
   opening.addEventListener("transitionend", () => opening.remove(), { once:true });
 }
 
-video.addEventListener("ended", endOpening);
+// Auto-end after 5 seconds if not skipped
+setTimeout(() => {
+  if(!opening.classList.contains('hidden')){
+    endOpening();
+  }
+}, 5000);
 
 /* ========= Hamburger ========= */
 function toggleMenu(){
