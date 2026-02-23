@@ -19,27 +19,20 @@
   --sand:#E8E0D5;
   --camel:#C4A77D;
   --camel-deep:#8B7355;
-  
+
   --navy:#1A2B3C;
   --navy-light:#2C3E50;
   --sage:#8FA396;
   --terracotta:#C67B5C;
-  
+
   --ink:#1F2F3A;
   --ink-light:#4A5568;
   --muted:#718096;
   --border:rgba(31,47,58,0.08);
-  
-  --glass: rgba(245,241,235,0.85);
-  --radius:4px;
-  --radius-lg:12px;
-  --shadow-sm: 0 2px 8px rgba(31,47,58,0.04);
-  --shadow-md: 0 8px 24px rgba(31,47,58,0.08);
-  --shadow-lg: 0 20px 48px rgba(31,47,58,0.12);
-  
+
   --font-serif: 'Cormorant Garamond', Georgia, serif;
   --font-sans: 'Inter', -apple-system, sans-serif;
-  
+
   --space-xs: 0.5rem;
   --space-sm: 1rem;
   --space-md: 1.5rem;
@@ -68,265 +61,349 @@ body{
 }
 
 /* =====================================================
-   2. VIDEO OPENING - With Animated Dice
+   2. VIDEO OPENING - "MORE REAL" DICE (MaxMara-ish)
+   - Remove particles/lightshow
+   - Single lighting direction
+   - Subtle texture + AO shadow
+   - Less rotation, more weight
 ===================================================== */
 .video-opening{
   position:fixed;
   inset:0;
-  background:linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0f1419 100%);
   z-index:9999;
   display:flex;
   align-items:center;
   justify-content:center;
-  transition:opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s;
+  transition:opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.9s;
   overflow:hidden;
+
+  /* "Camel table" vibe */
+  background:
+    radial-gradient(1200px 600px at 50% 20%, rgba(255,255,255,0.22), rgba(255,255,255,0) 60%),
+    radial-gradient(900px 500px at 20% 80%, rgba(0,0,0,0.10), rgba(0,0,0,0) 60%),
+    linear-gradient(180deg, #C8AE86 0%, #BFA277 100%);
 }
+.video-opening::before{
+  /* Subtle grain across the whole opening */
+  content:'';
+  position:absolute;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+  opacity:.35;
+  pointer-events:none;
+}
+.video-opening::after{
+  /* Gentle vignette like studio photo */
+  content:'';
+  position:absolute;
+  inset:-2px;
+  background:radial-gradient(closest-side at 50% 45%, rgba(0,0,0,0) 55%, rgba(0,0,0,.18) 100%);
+  pointer-events:none;
+}
+
 .video-opening.hidden{
   opacity:0;
   visibility:hidden;
   pointer-events:none;
 }
 
-/* Background Pattern */
-.opening-bg{
-  position:absolute;
-  inset:0;
-  background-image: 
-    radial-gradient(circle at 20% 50%, rgba(196,167,125,0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(198,123,92,0.08) 0%, transparent 50%),
-    radial-gradient(circle at 40% 20%, rgba(143,163,150,0.05) 0%, transparent 40%);
-  animation:bgPulse 8s ease-in-out infinite;
-}
-
-@keyframes bgPulse{
-  0%, 100%{opacity:0.5;}
-  50%{opacity:1;}
-}
-
-/* Dice Container */
-.dice-container{
+/* Dice Stage */
+.dice-stage{
   position:relative;
-  width:400px;
-  height:400px;
+  width:620px;
+  height:420px;
   display:flex;
   align-items:center;
   justify-content:center;
-  perspective:1000px;
+  perspective:1100px;
   z-index:2;
 }
 
-/* Individual Die */
-.die{
-  width:80px;
-  height:80px;
+/* 3D Die Container */
+.die-wrapper{
   position:absolute;
+  width:96px;
+  height:96px;
   transform-style:preserve-3d;
-  animation:rollDice 3s ease-out forwards;
+  opacity:0;
 }
 
-.die:nth-child(1){
-  animation-delay:0.2s;
-  top:30%;
-  left:30%;
+/* Layout (like tabletop spread) */
+.die-wrapper:nth-child(1){ left:18%; top:55%; transform:translateY(-50%); }
+.die-wrapper:nth-child(2){ left:50%; top:48%; transform:translate(-50%, -50%); width:118px; height:118px; }
+.die-wrapper:nth-child(3){ right:18%; top:55%; transform:translateY(-50%); }
+
+/* Realistic roll-in: smaller angles, heavier easing */
+.die-wrapper:nth-child(1){
+  animation:rollDie1 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-.die:nth-child(2){
-  animation-delay:0.5s;
-  top:40%;
-  right:25%;
-  width:60px;
-  height:60px;
-}
-.die:nth-child(3){
-  animation-delay:0.8s;
-  bottom:30%;
-  left:35%;
-  width:70px;
-  height:70px;
+@keyframes rollDie1{
+  0%{
+    transform:translateY(-50%) translateX(-90px) translateZ(-220px) rotateX(220deg) rotateY(140deg) rotateZ(18deg);
+    opacity:0;
+  }
+  25%{opacity:1;}
+  70%{
+    transform:translateY(-50%) translateX(0) translateZ(0) rotateX(26deg) rotateY(-18deg) rotateZ(6deg);
+    opacity:1;
+  }
+  100%{
+    transform:translateY(-50%) translateX(0) translateZ(0) rotateX(18deg) rotateY(-22deg) rotateZ(4deg);
+    opacity:1;
+  }
 }
 
-/* Die Faces */
+.die-wrapper:nth-child(2){
+  animation:rollDie2 2.35s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+}
+@keyframes rollDie2{
+  0%{
+    transform:translate(-50%, -50%) translateY(-120px) translateZ(-260px) rotateX(260deg) rotateY(210deg) rotateZ(-18deg);
+    opacity:0;
+  }
+  25%{opacity:1;}
+  75%{
+    transform:translate(-50%, -50%) translateY(0) translateZ(24px) rotateX(16deg) rotateY(16deg) rotateZ(-4deg);
+    opacity:1;
+  }
+  100%{
+    transform:translate(-50%, -50%) translateY(0) translateZ(24px) rotateX(12deg) rotateY(14deg) rotateZ(-3deg);
+    opacity:1;
+  }
+}
+
+.die-wrapper:nth-child(3){
+  animation:rollDie3 2.1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+}
+@keyframes rollDie3{
+  0%{
+    transform:translateY(-50%) translateX(90px) translateZ(-220px) rotateX(210deg) rotateY(280deg) rotateZ(-14deg);
+    opacity:0;
+  }
+  25%{opacity:1;}
+  70%{
+    transform:translateY(-50%) translateX(0) translateZ(0) rotateX(-14deg) rotateY(26deg) rotateZ(-6deg);
+    opacity:1;
+  }
+  100%{
+    transform:translateY(-50%) translateX(0) translateZ(0) rotateX(-10deg) rotateY(22deg) rotateZ(-5deg);
+    opacity:1;
+  }
+}
+
+/* The Die Cube */
+.die{
+  width:100%;
+  height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+
+  /* Adds unified soft contact shadow */
+  filter: drop-shadow(0 16px 22px rgba(0,0,0,.22));
+}
+
+/* Die Faces - premium matte ceramic + grain */
 .face{
   position:absolute;
   width:100%;
   height:100%;
-  background:linear-gradient(145deg, #f5f1eb 0%, #e8e0d5 100%);
-  border:2px solid #d4c4b0;
-  border-radius:12px;
+  border-radius:18px;
   display:flex;
   align-items:center;
   justify-content:center;
-  box-shadow:inset 0 0 20px rgba(0,0,0,0.1), 0 10px 30px rgba(0,0,0,0.3);
   backface-visibility:hidden;
+  overflow:hidden;
+
+  /* one-direction light (top-left) */
+  background:
+    radial-gradient(140% 120% at 18% 18%, rgba(255,255,255,.60) 0%, rgba(255,255,255,0) 45%),
+    linear-gradient(145deg, #F7F1E9 0%, #E8DDCF 55%, #D8C8B6 100%);
+  border:1px solid rgba(90, 70, 45, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.50),
+    inset 0 -14px 26px rgba(0,0,0,.10);
 }
 
 .face::before{
+  /* micro texture on each face */
   content:'';
+  position:absolute;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+  opacity:.35;
+  pointer-events:none;
+}
+
+.face::after{
+  /* subtle spec highlight */
+  content:'';
+  position:absolute;
+  inset:-20% -20% auto auto;
+  width:120%;
+  height:120%;
+  background:radial-gradient(circle at 20% 20%, rgba(255,255,255,.40), rgba(255,255,255,0) 55%);
+  transform:rotate(-10deg);
+  opacity:.55;
+  pointer-events:none;
+}
+
+/* Inner bevel (less "UI frame", more subtle) */
+.face .bevel{
   position:absolute;
   inset:8px;
-  border:1px solid rgba(196,167,125,0.3);
-  border-radius:8px;
+  border-radius:14px;
+  border:1px solid rgba(90,70,45,.14);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.20);
+  pointer-events:none;
 }
 
-/* Dots/Pips */
-.pip{
-  width:12px;
-  height:12px;
-  background:var(--navy);
-  border-radius:50%;
-  position:absolute;
-  box-shadow:inset 0 2px 4px rgba(0,0,0,0.3);
+/* Letter Styling */
+.letter{
+  font-family:var(--font-serif);
+  font-size:3.35rem;
+  font-weight:600;
+  color:#1B2A38; /* less saturated than navy */
+  text-shadow: 0 1px 0 rgba(255,255,255,.35);
+  position:relative;
+  z-index:2;
 }
-
-.pip.center{top:50%;left:50%;transform:translate(-50%,-50%);}
-.pip.top-left{top:20%;left:20%;}
-.pip.top-right{top:20%;right:20%;}
-.pip.middle-left{top:50%;left:20%;transform:translateY(-50%);}
-.pip.middle-right{top:50%;right:20%;transform:translateY(-50%);}
-.pip.bottom-left{bottom:20%;left:20%;}
-.pip.bottom-right{bottom:20%;right:20%;}
+.die-wrapper:nth-child(2) .letter{ font-size:4.0rem; }
 
 /* Face Transforms */
-.face.front{transform:translateZ(40px);}
-.face.back{transform:rotateY(180deg) translateZ(40px);}
-.face.right{transform:rotateY(90deg) translateZ(40px);}
-.face.left{transform:rotateY(-90deg) translateZ(40px);}
-.face.top{transform:rotateX(90deg) translateZ(40px);}
-.face.bottom{transform:rotateX(-90deg) translateZ(40px);}
+.face.front{transform:translateZ(48px);}
+.face.back{transform:rotateY(180deg) translateZ(48px);}
+.face.right{transform:rotateY(90deg) translateZ(48px);}
+.face.left{transform:rotateY(-90deg) translateZ(48px);}
+.face.top{transform:rotateX(90deg) translateZ(48px);}
+.face.bottom{transform:rotateX(-90deg) translateZ(48px);}
 
-/* Smaller dice adjustments */
-.die:nth-child(2) .face{box-shadow:inset 0 0 15px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.3);}
-.die:nth-child(2) .pip{width:9px;height:9px;}
-.die:nth-child(3) .pip{width:10px;height:10px;}
+/* Larger center die depth */
+.die-wrapper:nth-child(2) .face.front{transform:translateZ(59px);}
+.die-wrapper:nth-child(2) .face.back{transform:rotateY(180deg) translateZ(59px);}
+.die-wrapper:nth-child(2) .face.right{transform:rotateY(90deg) translateZ(59px);}
+.die-wrapper:nth-child(2) .face.left{transform:rotateY(-90deg) translateZ(59px);}
+.die-wrapper:nth-child(2) .face.top{transform:rotateX(90deg) translateZ(59px);}
+.die-wrapper:nth-child(2) .face.bottom{transform:rotateX(-90deg) translateZ(59px);}
 
-/* Dice Roll Animation */
-@keyframes rollDice{
-  0%{
-    transform:rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateY(-200px) scale(0.5);
-    opacity:0;
-  }
-  20%{
-    opacity:1;
-  }
-  60%{
-    transform:rotateX(720deg) rotateY(540deg) rotateZ(360deg) translateY(50px) scale(1.1);
-  }
-  100%{
-    transform:rotateX(1080deg) rotateY(810deg) rotateZ(720deg) translateY(0) scale(1);
-  }
-}
-
-/* Floating Animation After Roll */
-.die.floating{
-  animation:float 4s ease-in-out infinite;
-}
-
-@keyframes float{
-  0%, 100%{transform:translateY(0) rotateX(10deg) rotateY(10deg);}
-  25%{transform:translateY(-15px) rotateX(15deg) rotateY(-10deg);}
-  50%{transform:translateY(-5px) rotateX(-5deg) rotateY(15deg);}
-  75%{transform:translateY(-20px) rotateX(10deg) rotateY(5deg);}
-}
-
-/* Shadow under dice */
-.die::after{
+/* Table contact shadow (AO + spread) */
+.die-wrapper::after{
   content:'';
   position:absolute;
-  width:60px;
-  height:10px;
-  background:rgba(0,0,0,0.2);
-  border-radius:50%;
-  bottom:-30px;
   left:50%;
+  bottom:-44px;
   transform:translateX(-50%);
-  filter:blur(8px);
-  animation:shadowScale 3s ease-out forwards;
+  width:128px;
+  height:36px;
+  background:
+    radial-gradient(closest-side, rgba(0,0,0,.34), rgba(0,0,0,0) 68%),
+    radial-gradient(closest-side, rgba(0,0,0,.20), rgba(0,0,0,0) 52%);
+  filter:blur(10px);
+  opacity:.85;
+}
+.die-wrapper:nth-child(2)::after{
+  width:156px;
+  height:44px;
+  bottom:-54px;
+  filter:blur(12px);
+  opacity:.9;
 }
 
-@keyframes shadowScale{
-  0%{transform:translateX(-50%) scale(0);opacity:0;}
-  60%{transform:translateX(-50%) scale(1.2);opacity:0.3;}
-  100%{transform:translateX(-50%) scale(1);opacity:0.2;}
+/* Very gentle idle motion (optional, much calmer than before) */
+.die-wrapper.idle{
+  animation:none !important;
+  opacity:1 !important;
+}
+.die-wrapper.idle:nth-child(1){
+  animation:idle1 7s ease-in-out infinite;
+}
+.die-wrapper.idle:nth-child(2){
+  animation:idle2 6s ease-in-out infinite;
+}
+.die-wrapper.idle:nth-child(3){
+  animation:idle3 8s ease-in-out infinite;
+}
+@keyframes idle1{
+  0%,100%{transform:translateY(-50%) rotateX(18deg) rotateY(-22deg) rotateZ(4deg);}
+  50%{transform:translateY(calc(-50% - 6px)) rotateX(20deg) rotateY(-18deg) rotateZ(6deg);}
+}
+@keyframes idle2{
+  0%,100%{transform:translate(-50%, -50%) translateZ(24px) rotateX(12deg) rotateY(14deg) rotateZ(-3deg);}
+  50%{transform:translate(-50%, calc(-50% - 6px)) translateZ(28px) rotateX(14deg) rotateY(12deg) rotateZ(-4deg);}
+}
+@keyframes idle3{
+  0%,100%{transform:translateY(-50%) rotateX(-10deg) rotateY(22deg) rotateZ(-5deg);}
+  50%{transform:translateY(calc(-50% - 6px)) rotateX(-8deg) rotateY(26deg) rotateZ(-6deg);}
 }
 
-/* Language Toggle */
+/* Language Toggle (same but slightly calmer) */
 .opening-lang{
   position:absolute;
   top:var(--space-lg);
   right:var(--space-lg);
   z-index:10;
-  background:rgba(255,255,255,0.95);
-  backdrop-filter:blur(20px);
-  border-radius:100px;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(14px);
+  border-radius:999px;
   padding:6px;
-  box-shadow:0 20px 50px rgba(0,0,0,0.3);
-  border:1px solid rgba(255,255,255,0.2);
-  animation:fadeInDown 1s ease 2s backwards;
+  box-shadow:0 18px 40px rgba(0,0,0,0.18);
+  border:1px solid rgba(0,0,0,0.06);
+  animation:fadeInDown 0.8s ease 0.8s backwards;
 }
-.lang-pill{
-  display:flex;
-  gap:4px;
-}
+.lang-pill{ display:flex; gap:4px; }
 .lang-opt{
   border:none;
   cursor:pointer;
-  border-radius:100px;
-  font-weight:600;
+  border-radius:999px;
+  font-weight:700;
   font-size:13px;
   letter-spacing:0.5px;
-  padding:10px 20px;
+  padding:10px 18px;
   background:transparent;
-  color:var(--ink-light);
-  transition:all 0.3s ease;
+  color:rgba(31,47,58,.72);
+  transition:all 0.25s ease;
   font-family:var(--font-sans);
 }
 .lang-opt:hover{
   color:var(--navy);
-  background:rgba(196,167,125,0.1);
+  background:rgba(196,167,125,0.16);
 }
 .lang-opt.is-active{
-  background:var(--navy);
+  background:rgba(31,47,58,.92);
   color:var(--cream);
-  box-shadow:0 4px 12px rgba(26,43,60,0.2);
+  box-shadow:0 6px 16px rgba(0,0,0,0.18);
 }
 
 /* Title */
 .video-title{
   position:absolute;
-  bottom:12%;
+  bottom:11%;
   left:50%;
   transform:translateX(-50%);
   text-align:center;
-  color:white;
+  color:rgba(255,255,255,.92);
   z-index:3;
   padding:0 var(--space-lg);
-  max-width:900px;
-  animation:fadeInUp 1s ease 2.5s backwards;
+  max-width:980px;
+  animation:fadeInUp 0.9s ease 0.95s backwards;
 }
 .video-title h1{
   font-family:var(--font-serif);
-  font-size:clamp(1.8rem, 4vw, 3rem);
+  font-size:clamp(1.9rem, 4vw, 3.1rem);
   font-weight:500;
   letter-spacing:-0.02em;
-  line-height:1.2;
+  line-height:1.15;
   margin-bottom:var(--space-sm);
-  opacity:0.95;
+  color:rgba(255,255,255,.92);
+  text-shadow:0 10px 40px rgba(0,0,0,.22);
 }
 .video-title p{
   font-size:clamp(0.85rem, 1.5vw, 1rem);
-  opacity:0.7;
-  font-weight:400;
-  letter-spacing:0.15em;
+  opacity:0.82;
+  font-weight:500;
+  letter-spacing:0.14em;
   text-transform:uppercase;
-}
-
-@keyframes fadeInUp{
-  from{opacity:0;transform:translateX(-50%) translateY(30px);}
-  to{opacity:1;transform:translateX(-50%) translateY(0);}
-}
-
-@keyframes fadeInDown{
-  from{opacity:0;transform:translateY(-20px);}
-  to{opacity:1;transform:translateY(0);}
 }
 
 /* Skip Button */
@@ -334,65 +411,35 @@ body{
   position:absolute;
   bottom:var(--space-lg);
   right:var(--space-lg);
-  background:rgba(255,255,255,0.1);
-  border:1px solid rgba(255,255,255,0.3);
-  color:white;
-  padding:12px 24px;
-  border-radius:100px;
+  background:rgba(255,255,255,0.16);
+  border:1px solid rgba(255,255,255,0.34);
+  color:rgba(255,255,255,.92);
+  padding:12px 22px;
+  border-radius:999px;
   cursor:pointer;
   font-size:12px;
   letter-spacing:0.1em;
   text-transform:uppercase;
-  transition:all 0.3s ease;
+  transition:all 0.25s ease;
   z-index:10;
-  animation:fadeIn 1s ease 3s backwards;
+  animation:fadeIn 0.8s ease 1.2s backwards;
 }
 .skip-opening:hover{
-  background:rgba(255,255,255,0.2);
-  border-color:rgba(255,255,255,0.5);
+  background:rgba(255,255,255,0.22);
+  border-color:rgba(255,255,255,0.48);
 }
 
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateX(-50%) translateY(26px);}
+  to{opacity:1;transform:translateX(-50%) translateY(0);}
+}
+@keyframes fadeInDown{
+  from{opacity:0;transform:translateY(-16px);}
+  to{opacity:1;transform:translateY(0);}
+}
 @keyframes fadeIn{
   from{opacity:0;}
   to{opacity:1;}
-}
-
-/* Decorative Elements */
-.decor-circle{
-  position:absolute;
-  border:1px solid rgba(196,167,125,0.2);
-  border-radius:50%;
-  animation:rotate 20s linear infinite;
-}
-.decor-circle:nth-child(1){
-  width:600px;
-  height:600px;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-}
-.decor-circle:nth-child(2){
-  width:500px;
-  height:500px;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  animation-direction:reverse;
-  animation-duration:15s;
-}
-.decor-circle:nth-child(3){
-  width:700px;
-  height:700px;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  border-color:rgba(198,123,92,0.15);
-  animation-duration:25s;
-}
-
-@keyframes rotate{
-  from{transform:translate(-50%,-50%) rotate(0deg);}
-  to{transform:translate(-50%,-50%) rotate(360deg);}
 }
 
 /* =====================================================
@@ -671,10 +718,10 @@ nav{
   width:100%;
   height:100%;
   background:linear-gradient(135deg, var(--sand) 0%, var(--cream) 100%);
-  border-radius:var(--radius-lg);
+  border-radius:12px;
   position:relative;
   overflow:hidden;
-  box-shadow:var(--shadow-lg);
+  box-shadow:0 20px 48px rgba(31,47,58,0.12);
 }
 .hero-image-placeholder::after{
   content:'';
@@ -777,7 +824,7 @@ section.content:nth-child(even){
 .card{
   background:var(--warm-white);
   border:1px solid var(--border);
-  border-radius:var(--radius-lg);
+  border-radius:12px;
   padding:var(--space-lg);
   transition:all 0.4s ease;
   position:relative;
@@ -797,7 +844,7 @@ section.content:nth-child(even){
 }
 .card:hover{
   transform:translateY(-4px);
-  box-shadow:var(--shadow-lg);
+  box-shadow:0 20px 48px rgba(31,47,58,0.12);
   border-color:var(--camel);
 }
 .card:hover::before{
@@ -881,10 +928,10 @@ section.content:nth-child(even){
 /* Map */
 .map-wrap{
   position:relative;
-  border-radius:var(--radius-lg);
+  border-radius:12px;
   overflow:hidden;
   border:1px solid var(--border);
-  box-shadow:var(--shadow-md);
+  box-shadow:0 8px 24px rgba(31,47,58,0.08);
   margin-top:var(--space-xl);
 }
 .map-link{
@@ -901,7 +948,7 @@ section.content:nth-child(even){
   background:rgba(255,255,255,0.95);
   padding:12px 20px;
   border-radius:100px;
-  box-shadow:var(--shadow-md);
+  box-shadow:0 8px 24px rgba(31,47,58,0.08);
   transition:all 0.3s ease;
   border:1px solid var(--border);
 }
@@ -924,7 +971,7 @@ section.content:nth-child(even){
   color:inherit;
   background:var(--warm-white);
   border:1px solid var(--border);
-  border-radius:var(--radius-lg);
+  border-radius:12px;
   padding:var(--space-md);
   transition:all 0.3s ease;
   position:relative;
@@ -949,7 +996,7 @@ section.content:nth-child(even){
 .link-card:hover{
   border-color:var(--camel);
   transform:translateY(-4px);
-  box-shadow:var(--shadow-lg);
+  box-shadow:0 20px 48px rgba(31,47,58,0.12);
 }
 .link-card:hover::after{
   background:var(--terracotta);
@@ -1029,271 +1076,111 @@ footer{
    6. RESPONSIVE
 ===================================================== */
 @media(max-width:1024px){
-  .hero-content{
-    grid-template-columns:1fr;
-    gap:var(--space-xl);
-    text-align:center;
-  }
-  .hero-left{
-    align-items:center;
-  }
-  .hero-subtitle{
-    max-width:100%;
-  }
-  .hero-info{
-    width:100%;
-    max-width:600px;
-  }
-  .hero-visual{
-    min-height:400px;
-    order:-1;
-  }
-  .cards-row{
-    grid-template-columns:repeat(2, 1fr);
-  }
-  .links-grid{
-    grid-template-columns:repeat(2, 1fr);
-  }
-  .program-list::before{
-    left:80px;
-  }
-  .program-item{
-    grid-template-columns:80px 1fr;
-  }
-  
-  /* Dice adjustments for mobile */
-  .dice-container{
-    width:300px;
-    height:300px;
-  }
-  .die{
-    width:60px;
-    height:60px;
-  }
-  .die:nth-child(1){top:25%;left:20%;}
-  .die:nth-child(2){top:35%;right:15%;}
-  .die:nth-child(3){bottom:25%;left:25%;}
-}
+  .hero-content{ grid-template-columns:1fr; gap:var(--space-xl); text-align:center; }
+  .hero-left{ align-items:center; }
+  .hero-subtitle{ max-width:100%; }
+  .hero-info{ width:100%; max-width:600px; }
+  .hero-visual{ min-height:400px; order:-1; }
+  .cards-row{ grid-template-columns:repeat(2, 1fr); }
+  .links-grid{ grid-template-columns:repeat(2, 1fr); }
+  .program-list::before{ left:80px; }
+  .program-item{ grid-template-columns:80px 1fr; }
 
+  .dice-stage{ width:420px; height:320px; }
+  .die-wrapper{ width:78px; height:78px; }
+  .die-wrapper:nth-child(2){ width:96px; height:96px; }
+  .letter{ font-size:2.5rem; }
+  .die-wrapper:nth-child(2) .letter{ font-size:3.0rem; }
+}
 @media(max-width:768px){
   .nav-links{
-    position:fixed;
-    top:80px;
-    left:0;
-    right:0;
+    position:fixed; top:80px; left:0; right:0;
     background:var(--warm-white);
     border-bottom:1px solid var(--border);
     padding:var(--space-md);
     display:none;
     flex-direction:column;
     gap:var(--space-sm);
-    box-shadow:var(--shadow-lg);
+    box-shadow:0 20px 48px rgba(31,47,58,0.12);
   }
-  .nav-links.show{
-    display:flex;
-  }
-  .hamburger{
-    display:block;
-  }
-  .cards-row,
-  .links-grid{
-    grid-template-columns:1fr;
-  }
-  .contact-grid{
-    grid-template-columns:1fr;
-    gap:var(--space-md);
-  }
-  section.content{
-    padding:var(--space-2xl) 0;
-  }
-  .program-list::before{
-    display:none;
-  }
+  .nav-links.show{ display:flex; }
+  .hamburger{ display:block; }
+  .cards-row, .links-grid{ grid-template-columns:1fr; }
+  .contact-grid{ grid-template-columns:1fr; gap:var(--space-md); }
+  section.content{ padding:var(--space-2xl) 0; }
+  .program-list::before{ display:none; }
   .program-item{
     grid-template-columns:1fr;
     gap:var(--space-xs);
     background:var(--warm-white);
     padding:var(--space-md);
-    border-radius:var(--radius-lg);
+    border-radius:12px;
     border:1px solid var(--border);
   }
-  .program-time{
-    text-align:left;
-    font-size:1.1rem;
-    color:var(--terracotta);
-  }
-  .program-content{
-    padding-left:0;
-    border-left:none;
-  }
-  
-  /* Mobile dice */
-  .dice-container{
-    width:250px;
-    height:250px;
-  }
-  .die{
-    width:50px;
-    height:50px;
-  }
-}
+  .program-time{ text-align:left; font-size:1.1rem; color:var(--terracotta); }
+  .program-content{ padding-left:0; border-left:none; }
 
+  .dice-stage{ width:320px; height:260px; }
+  .die-wrapper{ width:62px; height:62px; }
+  .die-wrapper:nth-child(2){ width:78px; height:78px; }
+  .letter{ font-size:2.0rem; }
+  .die-wrapper:nth-child(2) .letter{ font-size:2.5rem; }
+}
 @media(max-width:480px){
-  .container{
-    padding:0 var(--space-md);
-  }
-  .hero-info{
-    grid-template-columns:1fr;
-    gap:var(--space-sm);
-  }
-  .hero-cta{
-    flex-direction:column;
-    width:100%;
-  }
-  .btn{
-    width:100%;
-    justify-content:center;
-  }
-  
-  /* Small mobile dice */
-  .dice-container{
-    width:200px;
-    height:200px;
-  }
-  .die{
-    width:40px;
-    height:40px;
-  }
-  .pip{
-    width:8px;
-    height:8px;
-  }
+  .container{ padding:0 var(--space-md); }
+  .hero-info{ grid-template-columns:1fr; gap:var(--space-sm); }
+  .hero-cta{ flex-direction:column; width:100%; }
+  .btn{ width:100%; justify-content:center; }
+
+  .dice-stage{ width:270px; height:220px; }
+  .die-wrapper{ width:54px; height:54px; }
+  .die-wrapper:nth-child(2){ width:66px; height:66px; }
+  .letter{ font-size:1.6rem; }
+  .die-wrapper:nth-child(2) .letter{ font-size:2.0rem; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- VIDEO OPENING WITH ANIMATED DICE -->
+<!-- VIDEO OPENING WITH "MORE REAL" DICE -->
 <div id="videoOpening" class="video-opening">
-  <!-- Background Effects -->
-  <div class="opening-bg"></div>
-  <div class="decor-circle"></div>
-  <div class="decor-circle"></div>
-  <div class="decor-circle"></div>
-  
-  <!-- Animated Dice -->
-  <div class="dice-container" id="diceContainer">
-    <!-- Die 1 -->
-    <div class="die" id="die1">
-      <div class="face front"><div class="pip center"></div></div>
-      <div class="face back">
-        <div class="pip top-left"></div>
-        <div class="pip top-right"></div>
-        <div class="pip middle-left"></div>
-        <div class="pip middle-right"></div>
-        <div class="pip bottom-left"></div>
-        <div class="pip bottom-right"></div>
-      </div>
-      <div class="face right">
-        <div class="pip top-left"></div>
-        <div class="pip center"></div>
-        <div class="pip bottom-right"></div>
-      </div>
-      <div class="face left">
-        <div class="pip top-left"></div>
-        <div class="pip top-right"></div>
-        <div class="pip bottom-left"></div>
-        <div class="pip bottom-right"></div>
-      </div>
-      <div class="face top">
-        <div class="pip top-left"></div>
-        <div class="pip top-right"></div>
-        <div class="pip center"></div>
-        <div class="pip bottom-left"></div>
-        <div class="pip bottom-right"></div>
-      </div>
-      <div class="face bottom">
-        <div class="pip top-left"></div>
-        <div class="pip top-right"></div>
-        <div class="pip middle-left"></div>
-        <div class="pip middle-right"></div>
-        <div class="pip bottom-left"></div>
-        <div class="pip bottom-right"></div>
+
+  <!-- 3D Dice Stage -->
+  <div class="dice-stage" id="diceStage">
+    <!-- Die 1: M -->
+    <div class="die-wrapper" id="die1">
+      <div class="die">
+        <div class="face front"><span class="bevel"></span><span class="letter">M</span></div>
+        <div class="face back"><span class="bevel"></span><span class="letter">E</span></div>
+        <div class="face right"><span class="bevel"></span><span class="letter">D</span></div>
+        <div class="face left"><span class="bevel"></span><span class="letter">I</span></div>
+        <div class="face top"><span class="bevel"></span><span class="letter">C</span></div>
+        <div class="face bottom"><span class="bevel"></span><span class="letter">A</span></div>
       </div>
     </div>
-    
-    <!-- Die 2 -->
-    <div class="die" id="die2">
-      <div class="face front">
-        <div class="pip top-left"></div>
-        <div class="pip bottom-right"></div>
-      </div>
-      <div class="face back">
-        <div class="pip center"></div>
-      </div>
-      <div class="face right">
-        <div class="pip top-left"></div>
-        <div class="pip top-right"></div>
-        <div class="pip bottom-left"></div>
-        <div class="pip bottom-right"></div>
-      </div>
-      <div class="face left">
-        <div class="pip top-left"></div>
-        <div class="pip center"></div>
-        <div class="pip bottom-right"></div>
-      </div>
-      <div class="face top">
-        <div class="pip top-left"></div>
-        <div class="pip top-right"></div>
-        <div class="pip middle-left"></div>
-        <div class="pip middle-right"></div>
-        <div class="pip bottom-left"></div>
-        <div class="pip bottom-right"></div>
-      </div>
-      <div class="face bottom">
-        <div class="pip top-left"></div>
-        <div class="pip top-right"></div>
-        <div class="pip center"></div>
-        <div class="pip bottom-left"></div>
-        <div class="pip bottom-right"></div>
+
+    <!-- Die 2: T (Center, Larger) -->
+    <div class="die-wrapper" id="die2">
+      <div class="die">
+        <div class="face front"><span class="bevel"></span><span class="letter">T</span></div>
+        <div class="face back"><span class="bevel"></span><span class="letter">R</span></div>
+        <div class="face right"><span class="bevel"></span><span class="letter">A</span></div>
+        <div class="face left"><span class="bevel"></span><span class="letter">I</span></div>
+        <div class="face top"><span class="bevel"></span><span class="letter">N</span></div>
+        <div class="face bottom"><span class="bevel"></span><span class="letter">G</span></div>
       </div>
     </div>
-    
-    <!-- Die 3 -->
-    <div class="die" id="die3">
-      <div class="face front">
-        <div class="pip top-left"></div>
-        <div class="pip center"></div>
-        <div class="pip bottom-right"></div>
-      </div>
-      <div class="face back">
-        <div class="pip top-left"></div>
-        <div class="pip top-right"></div>
-        <div class="pip bottom-left"></div>
-        <div class="pip bottom-right"></div>
-      </div>
-      <div class="face right">
-        <div class="pip center"></div>
-      </div>
-      <div class="face left">
-        <div class="pip top-left"></div>
-        <div class="pip top-right"></div>
-        <div class="pip middle-left"></div>
-        <div class="pip middle-right"></div>
-        <div class="pip bottom-left"></div>
-        <div class="pip bottom-right"></div>
-      </div>
-      <div class="face top">
-        <div class="pip top-left"></div>
-        <div class="pip bottom-right"></div>
-      </div>
-      <div class="face bottom">
-        <div class="pip top-left"></div>
-        <div class="pip top-right"></div>
-        <div class="pip center"></div>
-        <div class="pip bottom-left"></div>
-        <div class="pip bottom-right"></div>
+
+    <!-- Die 3: S -->
+    <div class="die-wrapper" id="die3">
+      <div class="die">
+        <div class="face front"><span class="bevel"></span><span class="letter">S</span></div>
+        <div class="face back"><span class="bevel"></span><span class="letter">E</span></div>
+        <div class="face right"><span class="bevel"></span><span class="letter">M</span></div>
+        <div class="face left"><span class="bevel"></span><span class="letter">I</span></div>
+        <div class="face top"><span class="bevel"></span><span class="letter">N</span></div>
+        <div class="face bottom"><span class="bevel"></span><span class="letter">R</span></div>
       </div>
     </div>
   </div>
@@ -1309,7 +1196,7 @@ footer{
     <h1>2026 Medical Training Academic Exchange & Networking Seminar</h1>
     <p>In conjunction with Medical Korea 2026 · COEX Seoul</p>
   </div>
-  
+
   <button class="skip-opening" onclick="endOpening()">Skip Intro</button>
 </div>
 
@@ -1345,21 +1232,21 @@ footer{
     <div class="hero-content">
       <div class="hero-left">
         <div class="hero-badge">Medical Korea 2026</div>
-        
+
         <h1 class="hero-title"
             data-en="2026 Medical Training Seminar"
             data-kr="2026 중동 의료인 연수<br>학술교류 및 네트워킹 세미나">
           2026 Medical Training Seminar
         </h1>
-        
+
         <p class="hero-subtitle"
            data-en="Academic Exchange & Networking for Middle East Medical Professionals"
            data-kr="중동 의료 전문가를 위한 학술 교류 및 네트워킹">
           Academic Exchange & Networking for Middle East Medical Professionals
         </p>
-        
+
         <div class="hero-divider"></div>
-        
+
         <div class="hero-info">
           <div class="info-item">
             <div class="info-label" data-en="Date" data-kr="일시">Date</div>
@@ -1391,12 +1278,12 @@ footer{
           </a>
         </div>
       </div>
-      
+
       <div class="hero-visual">
         <div class="hero-image-placeholder"></div>
       </div>
     </div>
-    
+
     <div class="scroll-indicator" data-en="Scroll" data-kr="스크롤">Scroll</div>
   </section>
 
@@ -1508,7 +1395,7 @@ footer{
             </div>
           </div>
         </div>
-        
+
         <div class="program-item">
           <div class="program-time">15:20</div>
           <div class="program-content">
@@ -1519,7 +1406,7 @@ footer{
             </div>
           </div>
         </div>
-        
+
         <div class="program-item">
           <div class="program-time">16:20</div>
           <div class="program-content">
@@ -1530,7 +1417,7 @@ footer{
             </div>
           </div>
         </div>
-        
+
         <div class="program-item">
           <div class="program-time">16:50</div>
           <div class="program-content">
@@ -1541,7 +1428,7 @@ footer{
             </div>
           </div>
         </div>
-        
+
         <div class="program-item">
           <div class="program-time">17:20</div>
           <div class="program-content">
@@ -1661,23 +1548,15 @@ footer{
 </div>
 
 <script>
-/* ========= Dice Animation ========= */
-const dice = document.querySelectorAll('.die');
-const diceContainer = document.getElementById('diceContainer');
-
-// Add floating animation after roll completes
-setTimeout(() => {
-  dice.forEach((die, index) => {
-    die.style.animation = 'none';
-    die.offsetHeight; /* Trigger reflow */
-    die.style.animation = `float ${4 + index * 0.5}s ease-in-out infinite`;
-    die.style.animationDelay = `${index * 0.3}s`;
-  });
-}, 3000);
-
 /* ========= Opening Sequence ========= */
 const opening = document.getElementById("videoOpening");
 const page = document.getElementById("page");
+
+/* Calm idle after roll finishes */
+const diceWrappers = document.querySelectorAll('.die-wrapper');
+setTimeout(() => {
+  diceWrappers.forEach(w => w.classList.add('idle'));
+}, 2600);
 
 function endOpening(){
   page.style.opacity = "1";
@@ -1685,12 +1564,12 @@ function endOpening(){
   opening.addEventListener("transitionend", () => opening.remove(), { once:true });
 }
 
-// Auto-end after 5 seconds if not skipped
+/* Auto-end after 6 seconds if not skipped */
 setTimeout(() => {
   if(!opening.classList.contains('hidden')){
     endOpening();
   }
-}, 5000);
+}, 6000);
 
 /* ========= Hamburger ========= */
 function toggleMenu(){
@@ -1719,7 +1598,7 @@ function highlightNav(){
       current = sec.getAttribute("id");
     }
   });
-  
+
   navA.forEach(a => {
     a.classList.remove("active");
     if(a.getAttribute("href") === "#" + current){
@@ -1765,10 +1644,8 @@ btnEN.addEventListener("click", () => chooseLangAndEnter("en"));
 btnKR.addEventListener("click", () => chooseLangAndEnter("kr"));
 navLangBtn.addEventListener("click", toggleLang);
 
-// Initialize
-window.addEventListener('load', () => {
-  page.style.opacity = "1";
-});
+/* IMPORTANT: do NOT force page opacity on load.
+   We keep it hidden until endOpening(). */
 </script>
 </body>
 </html>
