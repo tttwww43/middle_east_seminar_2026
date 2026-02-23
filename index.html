@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>2026 Medical Training Seminar</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* =====================================================
+   1. GLOBAL & DESIGN TOKENS
+===================================================== */
+:root{
+  /* Primary Palette - Sophisticated Medical/Academic */
+  --cream:#F5F1EB;
+  --warm-white:#FAF9F7;
+  --sand:#E8E0D5;
+  --camel:#C4A77D;
+  --camel-deep:#8B7355;
+  
+  /* Accents - Professional Medical */
+  --navy:#1A2B3C;
+  --navy-light:#2C3E50;
+  --sage:#8FA396;
+  --sage-light:#B8C4B8;
+  --terracotta:#C67B5C;
+  --terracotta-light:#D99A7E;
+  
+  /* Functional */
+  --ink:#1F2F3A;
+  --ink-light:#4A5568;
+  --muted:#718096;
+  --border:rgba(31,47,58,0.08);
+  --border-light:rgba(31,47,58,0.04);
+  
+  /* Effects */
+  --glass: rgba(245,241,235,0.85);
+  --glass-dark: rgba(26,43,60,0.95);
+  --radius:4px;
+  --radius-lg:12px;
+  --shadow-sm: 0 2px 8px rgba(31,47,58,0.04);
+  --shadow-md: 0 8px 24px rgba(31,47,58,0.08);
+  --shadow-lg: 0 20px 48px rgba(31,47,58,0.12);
+  
+  /* Typography Scale */
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, sans-serif;
+  
+  /* Spacing Scale */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+  --space-2xl: 6rem;
+  --space-3xl: 8rem;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body{
+  font-family:var(--font-sans);
+  color:var(--ink);
+  background:var(--warm-white);
+  line-height:1.6;
+  font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+
+.container{
+  max-width:1280px;
+  margin:auto;
+  padding:0 var(--space-lg);
+}
+
+/* =====================================================
+   2. VIDEO OPENING - Cinematic Editorial
+===================================================== */
+.video-opening{
+  position:fixed;
+  inset:0;
+  background:var(--navy);
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s;
+}
+.video-opening.hidden{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+.video-bg{
+  position:absolute;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0.9;
+}
+
+.opening-lang{
+  position:absolute;
+  top:var(--space-lg);
+  right:var(--space-lg);
+  z-index:10;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(20px);
+  border-radius:100px;
+  padding:6px;
+  box-shadow:var(--shadow-lg);
+  border:1px solid rgba(255,255,255,0.2);
+}
+.lang-pill{
+  display:flex;
+  gap:4px;
+}
+.lang-opt{
+  border:none;
+  cursor:pointer;
+  border-radius:100px;
+  font-weight:600;
+  font-size:13px;
+  letter-spacing:0.5px;
+  padding:10px 20px;
+  background:transparent;
+  color:var(--ink-light);
+  transition:all 0.3s ease;
+  font-family:var(--font-sans);
+}
+.lang-opt:hover{
+  color:var(--navy);
+  background:rgba(196,167,125,0.1);
+}
+.lang-opt.is-active{
+  background:var(--navy);
+  color:var(--cream);
+  box-shadow:0 4px 12px rgba(26,43,60,0.2);
+}
+
+.video-title{
+  position:absolute;
+  bottom:15%;
+  left:50%;
+  transform:translateX(-50%);
+  text-align:center;
+  color:white;
+  z-index:3;
+  padding:0 var(--space-lg);
+  max-width:900px;
+}
+.video-title h1{
+  font-family:var(--font-serif);
+  font-size:clamp(2rem, 5vw, 3.5rem);
+  font-weight:500;
+  letter-spacing:-0.02em;
+  line-height:1.2;
+  margin-bottom:var(--space-sm);
+  opacity:0;
+  animation:fadeUp 1s ease 0.5s forwards;
+}
+.video-title p{
+  font-size:clamp(0.9rem, 1.5vw, 1.1rem);
+  opacity:0;
+  font-weight:400;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  animation:fadeUp 1s ease 0.8s forwards;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:0.9;transform:translateY(0);}
+}
+
+/* Skip button */
+.skip-opening{
+  position:absolute;
+  bottom:var(--space-lg);
+  right:var(--space-lg);
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.3);
+  color:white;
+  padding:12px 24px;
+  border-radius:100px;
+  cursor:pointer;
+  font-size:12px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  transition:all 0.3s ease;
+  z-index:10;
+}
+.skip-opening:hover{
+  background:rgba(255,255,255,0.2);
+  border-color:rgba(255,255,255,0.5);
+}
+
+/* =====================================================
+   3. NAVIGATION - Minimal Editorial
+===================================================== */
+nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  background:rgba(250,249,247,0.92);
+  backdrop-filter:blur(20px) saturate(180%);
+  z-index:1000;
+  padding:0;
+  border-bottom:1px solid var(--border);
+  transition:all 0.3s ease;
+}
+.nav-container{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  height:80px;
+  gap:var(--space-lg);
+}
+.logo{
+  font-family:var(--font-serif);
+  font-weight:600;
+  color:var(--navy);
+  letter-spacing:-0.02em;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:1.25rem;
+  text-decoration:none;
+}
+.logo-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--terracotta);
+  position:relative;
+}
+.logo-dot::after{
+  content:'';
+  position:absolute;
+  inset:-4px;
+  border:1px solid var(--terracotta);
+  border-radius:50%;
+  opacity:0.5;
+}
+.nav-right{
+  display:flex;
+  align-items:center;
+  gap:var(--space-md);
+}
+.nav-links{
+  display:flex;
+  gap:var(--space-lg);
+  list-style:none;
+}
+.nav-links a{
+  text-decoration:none;
+  color:var(--ink-light);
+  font-weight:500;
+  font-size:14px;
+  letter-spacing:0.02em;
+  position:relative;
+  padding:8px 0;
+  transition:color 0.3s ease;
+}
+.nav-links a:hover,
+.nav-links a.active{
+  color:var(--navy);
+}
+.nav-links a::after{
+  content:'';
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:0;
+  height:1px;
+  background:var(--terracotta);
+  transition:width 0.3s ease;
+}
+.nav-links a:hover::after,
+.nav-links a.active::after{
+  width:100%;
+}
+
+.lang-toggle{
+  border:1px solid var(--border);
+  background:transparent;
+  padding:8px 16px;
+  border-radius:100px;
+  font-weight:600;
+  font-size:13px;
+  cursor:pointer;
+  color:var(--ink-light);
+  transition:all 0.3s ease;
+  letter-spacing:0.05em;
+}
+.lang-toggle:hover{
+  border-color:var(--camel);
+  color:var(--camel-deep);
+  background:rgba(196,167,125,0.05);
+}
+
+.hamburger{
+  display:none;
+  font-size:24px;
+  cursor:pointer;
+  user-select:none;
+  padding:8px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--ink);
+}
+
+/* =====================================================
+   4. HERO - Editorial Layout
+===================================================== */
+.hero{
+  min-height:100vh;
+  position:relative;
+  overflow:hidden;
+  padding-top:160px;
+  padding-bottom:var(--space-3xl);
+  display:flex;
+  align-items:center;
+  background:
+    linear-gradient(135deg, var(--cream) 0%, var(--warm-white) 50%, var(--sand) 100%);
+  position:relative;
+}
+.hero::before{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  width:60%;
+  height:100%;
+  background:radial-gradient(circle at 80% 20%, rgba(196,167,125,0.15) 0%, transparent 50%),
+             radial-gradient(circle at 60% 80%, rgba(143,163,150,0.1) 0%, transparent 40%);
+  pointer-events:none;
+}
+.hero-content{
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 var(--space-lg);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:var(--space-3xl);
+  align-items:center;
+  position:relative;
+  z-index:1;
+}
+.hero-left{
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-md);
+}
+.hero-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--terracotta);
+  margin-bottom:var(--space-sm);
+}
+.hero-badge::before{
+  content:'';
+  width:24px;
+  height:1px;
+  background:var(--terracotta);
+}
+.hero-title{
+  font-family:var(--font-serif);
+  font-size:clamp(2.5rem, 4vw, 4rem);
+  font-weight:500;
+  letter-spacing:-0.03em;
+  line-height:1.1;
+  color:var(--navy);
+  margin-bottom:var(--space-sm);
+}
+.hero-subtitle{
+  font-size:clamp(1.1rem, 1.5vw, 1.35rem);
+  color:var(--ink-light);
+  font-weight:400;
+  line-height:1.6;
+  max-width:90%;
+}
+.hero-divider{
+  width:60px;
+  height:2px;
+  background:linear-gradient(90deg, var(--terracotta) 0%, var(--camel) 100%);
+  margin:var(--space-md) 0;
+}
+
+.hero-info{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:var(--space-md);
+  margin-top:var(--space-md);
+  padding-top:var(--space-md);
+  border-top:1px solid var(--border);
+}
+.info-item{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.info-label{
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.info-value{
+  font-size:1rem;
+  font-weight:600;
+  color:var(--navy);
+  letter-spacing:-0.01em;
+}
+
+.hero-cta{
+  margin-top:var(--space-lg);
+  display:flex;
+  gap:var(--space-sm);
+}
+.btn{
+  padding:16px 32px;
+  border-radius:100px;
+  font-weight:600;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:14px;
+  letter-spacing:0.02em;
+  transition:all 0.3s ease;
+  border:1px solid transparent;
+}
+.btn-primary{
+  background:var(--navy);
+  color:var(--cream);
+  box-shadow:0 4px 16px rgba(26,43,60,0.2);
+}
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(26,43,60,0.3);
+  background:var(--navy-light);
+}
+.btn-secondary{
+  background:transparent;
+  border-color:var(--border);
+  color:var(--navy);
+}
+.btn-secondary:hover{
+  border-color:var(--camel);
+  color:var(--camel-deep);
+  background:rgba(196,167,125,0.05);
+}
+
+.hero-visual{
+  position:relative;
+  height:100%;
+  min-height:500px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.hero-image-placeholder{
+  width:100%;
+  height:100%;
+  background:linear-gradient(135deg, var(--sand) 0%, var(--cream) 100%);
+  border-radius:var(--radius-lg);
+  position:relative;
+  overflow:hidden;
+  box-shadow:var(--shadow-lg);
+}
+.hero-image-placeholder::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="none" stroke="%23C4A77D" stroke-width="0.5" x="10" y="10" width="80" height="80" opacity="0.3"/></svg>');
+  background-size:40px 40px;
+  opacity:0.5;
+}
+
+.scroll-indicator{
+  position:absolute;
+  bottom:var(--space-xl);
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  animation:bounce 2s infinite;
+}
+.scroll-indicator::after{
+  content:'↓';
+  font-size:16px;
+}
+
+@keyframes bounce{
+  0%, 20%, 50%, 80%, 100%{transform:translateX(-50%) translateY(0);}
+  40%{transform:translateX(-50%) translateY(-10px);}
+  60%{transform:translateX(-50%) translateY(-5px);}
+}
+
+/* =====================================================
+   5. SECTIONS - Editorial Spacing
+===================================================== */
+section.content{
+  padding:var(--space-3xl) 0;
+  opacity:0;
+  transform:translateY(40px);
+  transition:opacity 0.8s ease, transform 0.8s ease;
+}
+section.content.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+section.content:nth-child(even){
+  background:var(--cream);
+}
+
+.section-header{
+  max-width:800px;
+  margin-bottom:var(--space-xl);
+}
+.section-eyebrow{
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:var(--terracotta);
+  margin-bottom:var(--space-sm);
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.section-eyebrow::after{
+  content:'';
+  flex:1;
+  height:1px;
+  background:linear-gradient(90deg, var(--terracotta) 0%, transparent 100%);
+  max-width:60px;
+}
+.section-title{
+  font-family:var(--font-serif);
+  font-size:clamp(2rem, 3vw, 2.75rem);
+  font-weight:500;
+  letter-spacing:-0.02em;
+  line-height:1.2;
+  color:var(--navy);
+  margin-bottom:var(--space-md);
+}
+.section-text{
+  color:var(--ink-light);
+  line-height:1.8;
+  font-size:1.05rem;
+  max-width:700px;
+}
+
+/* Cards - Editorial Style */
+.cards-row{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:var(--space-lg);
+  margin-top:var(--space-xl);
+}
+.card{
+  background:var(--warm-white);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:var(--space-lg);
+  transition:all 0.4s ease;
+  position:relative;
+  overflow:hidden;
+}
+.card::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:3px;
+  background:linear-gradient(90deg, var(--terracotta) 0%, var(--camel) 100%);
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform 0.4s ease;
+}
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--shadow-lg);
+  border-color:var(--camel);
+}
+.card:hover::before{
+  transform:scaleX(1);
+}
+.card-number{
+  font-family:var(--font-serif);
+  font-size:3rem;
+  font-weight:300;
+  color:var(--sand);
+  line-height:1;
+  margin-bottom:var(--space-sm);
+}
+.card h3{
+  font-family:var(--font-serif);
+  font-weight:600;
+  font-size:1.35rem;
+  letter-spacing:-0.01em;
+  margin-bottom:var(--space-sm);
+  color:var(--navy);
+}
+.card p{
+  color:var(--ink-light);
+  line-height:1.7;
+  font-size:0.95rem;
+}
+
+/* Program List - Timeline Style */
+.program-list{
+  margin-top:var(--space-xl);
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-sm);
+  position:relative;
+}
+.program-list::before{
+  content:'';
+  position:absolute;
+  left:100px;
+  top:0;
+  bottom:0;
+  width:1px;
+  background:var(--border);
+}
+.program-item{
+  display:grid;
+  grid-template-columns:100px 1fr;
+  gap:var(--space-lg);
+  align-items:start;
+  padding:var(--space-md) 0;
+  position:relative;
+}
+.program-time{
+  font-family:var(--font-serif);
+  font-size:1.5rem;
+  font-weight:600;
+  color:var(--terracotta);
+  text-align:right;
+  padding-right:var(--space-md);
+}
+.program-content{
+  padding-left:var(--space-md);
+  border-left:2px solid transparent;
+}
+.program-item:hover .program-content{
+  border-left-color:var(--terracotta);
+}
+.program-main{
+  font-family:var(--font-serif);
+  font-size:1.25rem;
+  font-weight:600;
+  color:var(--navy);
+  margin-bottom:4px;
+}
+.program-sub{
+  color:var(--muted);
+  font-size:0.95rem;
+  line-height:1.6;
+}
+
+/* Map - Editorial Frame */
+.map-wrap{
+  position:relative;
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-md);
+  margin-top:var(--space-xl);
+}
+.map-link{
+  position:absolute;
+  bottom:var(--space-md);
+  right:var(--space-md);
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  text-decoration:none;
+  font-weight:600;
+  font-size:13px;
+  color:var(--navy);
+  background:rgba(255,255,255,0.95);
+  padding:12px 20px;
+  border-radius:100px;
+  box-shadow:var(--shadow-md);
+  transition:all 0.3s ease;
+  border:1px solid var(--border);
+}
+.map-link:hover{
+  background:var(--navy);
+  color:var(--cream);
+  transform:translateY(-2px);
+}
+
+/* Links Grid - Minimal Cards */
+.links-grid{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:var(--space-md);
+  margin-top:var(--space-xl);
+}
+.link-card{
+  display:block;
+  text-decoration:none;
+  color:inherit;
+  background:var(--warm-white);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:var(--space-md);
+  transition:all 0.3s ease;
+  position:relative;
+  overflow:hidden;
+}
+.link-card::after{
+  content:'→';
+  position:absolute;
+  top:var(--space-md);
+  right:var(--space-md);
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:var(--cream);
+  color:var(--camel-deep);
+  font-size:14px;
+  transition:all 0.3s ease;
+}
+.link-card:hover{
+  border-color:var(--camel);
+  transform:translateY(-4px);
+  box-shadow:var(--shadow-lg);
+}
+.link-card:hover::after{
+  background:var(--terracotta);
+  color:white;
+  transform:translateX(4px);
+}
+.link-title{
+  font-family:var(--font-serif);
+  font-weight:600;
+  font-size:1.1rem;
+  margin-bottom:var(--space-xs);
+  color:var(--navy);
+  padding-right:40px;
+}
+.link-desc{
+  color:var(--muted);
+  font-size:0.85rem;
+  line-height:1.5;
+  margin-bottom:var(--space-sm);
+}
+.link-url{
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--camel-deep);
+  opacity:0.8;
+}
+
+/* Contact Section */
+.contact-grid{
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:var(--space-xl);
+  margin-top:var(--space-xl);
+}
+.contact-item h4{
+  font-family:var(--font-serif);
+  font-size:1.1rem;
+  font-weight:600;
+  color:var(--navy);
+  margin-bottom:var(--space-xs);
+}
+.contact-item p{
+  color:var(--ink-light);
+  font-size:1.1rem;
+  font-weight:500;
+}
+
+/* Footer - Minimal */
+footer{
+  text-align:center;
+  padding:var(--space-xl) 0;
+  color:var(--muted);
+  border-top:1px solid var(--border);
+  background:var(--navy);
+  color:var(--sand);
+}
+.footer-content{
+  max-width:1280px;
+  margin:0 auto;
+  padding:0 var(--space-lg);
+}
+.footer-logo{
+  font-family:var(--font-serif);
+  font-size:1.5rem;
+  font-weight:500;
+  margin-bottom:var(--space-sm);
+  color:var(--cream);
+}
+.footer-copy{
+  font-size:0.9rem;
+  opacity:0.7;
+}
+
+/* =====================================================
+   6. RESPONSIVE
+===================================================== */
+@media(max-width:1024px){
+  .hero-content{
+    grid-template-columns:1fr;
+    gap:var(--space-xl);
+    text-align:center;
+  }
+  .hero-left{
+    align-items:center;
+  }
+  .hero-subtitle{
+    max-width:100%;
+  }
+  .hero-info{
+    width:100%;
+    max-width:600px;
+  }
+  .hero-visual{
+    min-height:400px;
+    order:-1;
+  }
+  .cards-row{
+    grid-template-columns:repeat(2, 1fr);
+  }
+  .links-grid{
+    grid-template-columns:repeat(2, 1fr);
+  }
+  .program-list::before{
+    left:80px;
+  }
+  .program-item{
+    grid-template-columns:80px 1fr;
+  }
+}
+
+@media(max-width:768px){
+  .nav-links{
+    position:fixed;
+    top:80px;
+    left:0;
+    right:0;
+    background:var(--warm-white);
+    border-bottom:1px solid var(--border);
+    padding:var(--space-md);
+    display:none;
+    flex-direction:column;
+    gap:var(--space-sm);
+    box-shadow:var(--shadow-lg);
+  }
+  .nav-links.show{
+    display:flex;
+  }
+  .hamburger{
+    display:block;
+  }
+  .cards-row,
+  .links-grid{
+    grid-template-columns:1fr;
+  }
+  .contact-grid{
+    grid-template-columns:1fr;
+    gap:var(--space-md);
+  }
+  section.content{
+    padding:var(--space-2xl) 0;
+  }
+  .program-list::before{
+    display:none;
+  }
+  .program-item{
+    grid-template-columns:1fr;
+    gap:var(--space-xs);
+    background:var(--warm-white);
+    padding:var(--space-md);
+    border-radius:var(--radius-lg);
+    border:1px solid var(--border);
+  }
+  .program-time{
+    text-align:left;
+    font-size:1.1rem;
+    color:var(--terracotta);
+  }
+  .program-content{
+    padding-left:0;
+    border-left:none;
+  }
+}
+
+@media(max-width:480px){
+  .container{
+    padding:0 var(--space-md);
+  }
+  .hero-info{
+    grid-template-columns:1fr;
+    gap:var(--space-sm);
+  }
+  .hero-cta{
+    flex-direction:column;
+    width:100%;
+  }
+  .btn{
+    width:100%;
+    justify-content:center;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- VIDEO OPENING -->
+<div id="videoOpening" class="video-opening">
+  <video id="openingVideo" class="video-bg" autoplay muted playsinline>
+    <source src="assets/opening.mp4" type="video/mp4">
+  </video>
+
+  <div class="opening-lang" aria-label="Language toggle">
+    <div class="lang-pill" role="tablist" aria-label="EN/KR">
+      <button id="langEN" class="lang-opt" type="button" aria-pressed="false">EN</button>
+      <button id="langKR" class="lang-opt is-active" type="button" aria-pressed="true">KR</button>
+    </div>
+  </div>
+
+  <div class="video-title">
+    <h1>2026 Medical Training Academic Exchange & Networking Seminar</h1>
+    <p>In conjunction with Medical Korea 2026 · COEX Seoul</p>
+  </div>
+  
+  <button class="skip-opening" onclick="endOpening()">Skip Intro</button>
+</div>
+
+<div id="page" style="opacity:0;transition:1s ease;">
+
+  <!-- NAV -->
+  <nav>
+    <div class="container nav-container">
+      <a href="#top" class="logo">
+        <span class="logo-dot"></span>
+        <span>2026 Seminar</span>
+      </a>
+
+      <div class="nav-right">
+        <div class="hamburger" onclick="toggleMenu()">☰</div>
+
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#highlights">Highlights</a></li>
+          <li><a href="#program">Program</a></li>
+          <li><a href="#venue">Venue</a></li>
+          <li><a href="#links">Links</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+
+        <button id="langBtn" class="lang-toggle">KR</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="hero-content">
+      <div class="hero-left">
+        <div class="hero-badge">Medical Korea 2026</div>
+        
+        <h1 class="hero-title"
+            data-en="2026 Medical Training Seminar"
+            data-kr="2026 중동 의료인 연수<br>학술교류 및 네트워킹 세미나">
+          2026 Medical Training Seminar
+        </h1>
+        
+        <p class="hero-subtitle"
+           data-en="Academic Exchange & Networking for Middle East Medical Professionals"
+           data-kr="중동 의료 전문가를 위한 학술 교류 및 네트워킹">
+          Academic Exchange & Networking for Middle East Medical Professionals
+        </p>
+        
+        <div class="hero-divider"></div>
+        
+        <div class="hero-info">
+          <div class="info-item">
+            <div class="info-label" data-en="Date" data-kr="일시">Date</div>
+            <div class="info-value">March 20, 2026</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label" data-en="Time" data-kr="시간">Time</div>
+            <div class="info-value">15:00 – 17:20</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label" data-en="Venue" data-kr="장소">Venue</div>
+            <div class="info-value" data-en="COEX Seoul" data-kr="코엑스 서울">COEX Seoul</div>
+          </div>
+        </div>
+
+        <div class="hero-cta">
+          <a class="btn btn-primary"
+             href="https://forms.gle/PKDCmKRNyK3ovV6DA"
+             target="_blank"
+             rel="noopener"
+             data-en="Register Now →"
+             data-kr="등록하기 →">
+            Register Now →
+          </a>
+          <a class="btn btn-secondary" href="#program"
+             data-en="View Program"
+             data-kr="프로그램 보기">
+            View Program
+          </a>
+        </div>
+      </div>
+      
+      <div class="hero-visual">
+        <div class="hero-image-placeholder"></div>
+      </div>
+    </div>
+    
+    <div class="scroll-indicator" data-en="Scroll" data-kr="스크롤">Scroll</div>
+  </section>
+
+  <!-- OVERVIEW -->
+  <section id="overview" class="content">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">01</div>
+        <h2 class="section-title" data-en="Overview" data-kr="행사 개요">Overview</h2>
+        <p class="section-text"
+           data-en="This seminar is held during Medical Korea 2026 and provides a prestigious venue for academic exchange and networking for Middle East Medical Training Program participants."
+           data-kr="본 행사는 Medical Korea 2026 기간 중 진행되는 중동 의료인 연수 프로그램 참여자를 위한 학술 교류 및 네트워킹 세미나입니다.">
+          This seminar is held during Medical Korea 2026 and provides a prestigious venue for academic exchange and networking for Middle East Medical Training Program participants.
+        </p>
+      </div>
+
+      <div class="cards-row">
+        <div class="card">
+          <div class="card-number">01</div>
+          <h3 data-en="Linked Event" data-kr="연계 행사">Linked Event</h3>
+          <p data-en="Medical Korea 2026 (2026.3.19 – 3.22), the premier global healthcare exhibition in Seoul."
+             data-kr="Medical Korea 2026 (2026.3.19 – 3.22), 서울에서 개최되는 글로벌 헬스케어 전시회.">
+            Medical Korea 2026 (2026.3.19 – 3.22), the premier global healthcare exhibition in Seoul.
+          </p>
+        </div>
+        <div class="card">
+          <div class="card-number">02</div>
+          <h3 data-en="Venue" data-kr="장소">Venue</h3>
+          <p data-en="COEX Seoul – Conference Room (2F), Gangnam district, premium convention center."
+             data-kr="코엑스(COEX) 서울, 2층 컨퍼런스룸, 강남구 프리미엄 컨벤션 센터.">
+            COEX Seoul – Conference Room (2F), Gangnam district, premium convention center.
+          </p>
+        </div>
+        <div class="card">
+          <div class="card-number">03</div>
+          <h3 data-en="Duration" data-kr="소요 시간">Duration</h3>
+          <p data-en="Approximately 2 hours 20 minutes of intensive academic sessions and networking."
+             data-kr="약 2시간 20분의 집중적인 학술 세션 및 네트워킹.">
+            Approximately 2 hours 20 minutes of intensive academic sessions and networking.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HIGHLIGHTS -->
+  <section id="highlights" class="content">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">02</div>
+        <h2 class="section-title" data-en="Highlights" data-kr="주요 내용">Highlights</h2>
+        <p class="section-text"
+           data-en="Three pillars of professional development: academic exchange, experience sharing, and strategic networking."
+           data-kr="전문성 개발의 세 가지 축: 학술 교류, 경험 공유, 전략적 네트워킹.">
+          Three pillars of professional development: academic exchange, experience sharing, and strategic networking.
+        </p>
+      </div>
+
+      <div class="cards-row">
+        <div class="card">
+          <div class="card-number">I</div>
+          <h3 data-en="Academic Exchange" data-kr="학술 교류">Academic Exchange</h3>
+          <p data-en="Faculty share training supervision experiences and present latest clinical techniques and medical trends."
+             data-kr="연수 지도 교수의 연수 지도 경험 공유 및 최신 의료기술·임상 동향 발표.">
+            Faculty share training supervision experiences and present latest clinical techniques and medical trends.
+          </p>
+        </div>
+        <div class="card">
+          <div class="card-number">II</div>
+          <h3 data-en="Experience Sharing" data-kr="경험 공유">Experience Sharing</h3>
+          <p data-en="Trainees share their medical training experiences in Korea, fostering cross-cultural medical understanding."
+             data-kr="중동 의료인 연수생의 한국 의료 연수 경험 사례 공유.">
+            Trainees share their medical training experiences in Korea, fostering cross-cultural medical understanding.
+          </p>
+        </div>
+        <div class="card">
+          <div class="card-number">III</div>
+          <h3 data-en="Networking" data-kr="네트워킹">Networking</h3>
+          <p data-en="Curated networking session and exclusive lucky draw with trainees and key stakeholders."
+             data-kr="연수 참여 의료인 및 관계자 간 자유로운 교류와 네트워킹 및 럭키드로우.">
+            Curated networking session and exclusive lucky draw with trainees and key stakeholders.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAM -->
+  <section id="program" class="content">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">03</div>
+        <h2 class="section-title" data-en="Program Schedule" data-kr="프로그램 일정">Program Schedule</h2>
+        <p class="section-text"
+           data-en="A carefully curated schedule designed to maximize learning and connection opportunities."
+           data-kr="학습과 교류 기회를 극대화하도록 설계된 세심한 일정.">
+          A carefully curated schedule designed to maximize learning and connection opportunities.
+        </p>
+      </div>
+
+      <div class="program-list">
+        <div class="program-item">
+          <div class="program-time">15:00</div>
+          <div class="program-content">
+            <div class="program-main" data-en="Opening & Welcome" data-kr="개회 및 환영사">Opening & Welcome</div>
+            <div class="program-sub" data-en="Opening ceremony and welcome address by distinguished guests."
+                 data-kr="개회식 및 귀빈 환영사.">
+              Opening ceremony and welcome address by distinguished guests.
+            </div>
+          </div>
+        </div>
+        
+        <div class="program-item">
+          <div class="program-time">15:20</div>
+          <div class="program-content">
+            <div class="program-main" data-en="Academic Session" data-kr="학술 세션">Academic Session</div>
+            <div class="program-sub" data-en="Training supervision experiences · Latest clinical trends · Q&A"
+                 data-kr="연수 지도 경험 공유 · 최신 의료기술 동향 발표 · 질의응답.">
+              Training supervision experiences · Latest clinical trends · Q&A
+            </div>
+          </div>
+        </div>
+        
+        <div class="program-item">
+          <div class="program-time">16:20</div>
+          <div class="program-content">
+            <div class="program-main" data-en="Trainee Session" data-kr="연수생 세션">Trainee Session</div>
+            <div class="program-sub" data-en="Sharing experiences of medical training in Korea · Case studies"
+                 data-kr="중동 의료인 연수생의 한국 의료 연수 경험 공유 · 사례 연구.">
+              Sharing experiences of medical training in Korea · Case studies
+            </div>
+          </div>
+        </div>
+        
+        <div class="program-item">
+          <div class="program-time">16:50</div>
+          <div class="program-content">
+            <div class="program-main" data-en="Networking & Lucky Draw" data-kr="네트워킹 및 럭키드로우">Networking & Lucky Draw</div>
+            <div class="program-sub" data-en="Free networking session with refreshments and exclusive lucky draw."
+                 data-kr="다과와 함께하는 자유 네트워킹 및 특별 럭키드로우.">
+              Free networking session with refreshments and exclusive lucky draw.
+            </div>
+          </div>
+        </div>
+        
+        <div class="program-item">
+          <div class="program-time">17:20</div>
+          <div class="program-content">
+            <div class="program-main" data-en="Closing" data-kr="폐회">Closing</div>
+            <div class="program-sub" data-en="Closing remarks and commemorative photography."
+                 data-kr="폐회사 및 기념 촬영.">
+              Closing remarks and commemorative photography.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VENUE -->
+  <section id="venue" class="content">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">04</div>
+        <h2 class="section-title" data-en="Venue" data-kr="행사 장소">Venue</h2>
+        <p class="section-text"
+           data-en="COEX Seoul – Conference Room (2F), located within the Medical Korea 2026 exhibition venue."
+           data-kr="코엑스 서울 2층 컨퍼런스룸, Medical Korea 2026 전시장 내 위치.">
+          COEX Seoul – Conference Room (2F), located within the Medical Korea 2026 exhibition venue.
+        </p>
+      </div>
+
+      <div class="map-wrap">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3164.840375717259!2d127.05915100000001!3d37.511682799999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca536e4738c97%3A0x336c7537649c9fe4!2z7L2U7JeR7Iqk!5e0!3m2!1sko!2skr!4v1771548500283!5m2!1sko!2skr"
+          width="100%" height="450" style="border:0; filter: grayscale(20%) contrast(1.1);"
+          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+        <a class="map-link"
+           href="https://www.google.com/maps/search/?api=1&query=COEX%20Seoul"
+           target="_blank" rel="noopener" aria-label="Open COEX on Google Maps">
+          Open in Google Maps →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- LINKS -->
+  <section id="links" class="content">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">05</div>
+        <h2 class="section-title" data-en="Resources" data-kr="관련 자료">Resources</h2>
+        <p class="section-text"
+           data-en="Essential links for participants and interested professionals."
+           data-kr="참가자 및 관심 있는 전문가를 위한 필수 링크.">
+          Essential links for participants and interested professionals.
+        </p>
+      </div>
+
+      <div class="links-grid">
+        <a class="link-card" target="_blank" rel="noopener"
+           href="https://www.google.com/maps/search/?api=1&query=COEX%20Seoul">
+          <div class="link-title" data-en="COEX Seoul" data-kr="코엑스 서울">COEX Seoul</div>
+          <div class="link-desc" data-en="Venue location and directions." data-kr="행사장 위치 및 오시는 길.">Venue location and directions.</div>
+          <div class="link-url">Google Maps</div>
+        </a>
+
+        <a class="link-card" target="_blank" rel="noopener" href="https://mkconf.org/fairDash.do">
+          <div class="link-title" data-en="Medical Korea 2026" data-kr="Medical Korea 2026">Medical Korea 2026</div>
+          <div class="link-desc" data-en="Official exhibition website." data-kr="전시회 공식 웹사이트.">Official exhibition website.</div>
+          <div class="link-url">mkconf.org</div>
+        </a>
+
+        <a class="link-card" target="_blank" rel="noopener" href="https://www.medicalkorea.or.kr/kmtp/">
+          <div class="link-title" data-en="KMTP Program" data-kr="KMTP 프로그램">KMTP Program</div>
+          <div class="link-desc" data-en="Middle East Medical Training details." data-kr="중동 의료인 연수 프로그램 안내.">Middle East Medical Training details.</div>
+          <div class="link-url">medicalkorea.or.kr</div>
+        </a>
+
+        <a class="link-card" target="_blank" rel="noopener" href="https://mka-eclass.or.kr/courses">
+          <div class="link-title" data-en="e-Learning" data-kr="온라인 학습">e-Learning</div>
+          <div class="link-desc" data-en="Online courses and materials." data-kr="온라인 과정 및 자료.">Online courses and materials.</div>
+          <div class="link-url">mka-eclass.or.kr</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="content">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">06</div>
+        <h2 class="section-title" data-en="Contact" data-kr="문의하기">Contact</h2>
+        <p class="section-text"
+           data-en="For registration and inquiries, please contact us."
+           data-kr="등록 및 문의사항은 아래로 연락 주시기 바랍니다.">
+          For registration and inquiries, please contact us.
+        </p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-item">
+          <h4 data-en="Phone" data-kr="전화">Phone</h4>
+          <p>043-713-8971</p>
+        </div>
+        <div class="contact-item">
+          <h4 data-en="Email" data-kr="이메일">Email</h4>
+          <p>kyeol2@khidi.or.kr</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-logo">2026 Medical Training Seminar</div>
+      <div class="footer-copy">© 2026 Middle East Medical Training Program. All rights reserved.</div>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* ========= Video ========= */
+const opening = document.getElementById("videoOpening");
+const video = document.getElementById("openingVideo");
+const page = document.getElementById("page");
+
+function stopVideoHard(){
+  try{
+    video.pause();
+    video.currentTime = 0;
+    video.removeAttribute("src");
+    const srcEl = video.querySelector("source");
+    if(srcEl) srcEl.removeAttribute("src");
+    video.load();
+  } catch(e){}
+}
+
+function endOpening(){
+  page.style.opacity = "1";
+  stopVideoHard();
+  opening.classList.add("hidden");
+  opening.addEventListener("transitionend", () => opening.remove(), { once:true });
+}
+
+video.addEventListener("ended", endOpening);
+
+/* ========= Hamburger ========= */
+function toggleMenu(){
+  document.getElementById("navLinks").classList.toggle("show");
+}
+
+/* ========= Scroll reveal ========= */
+const contentSections = document.querySelectorAll("section.content");
+function revealOnScroll(){
+  contentSections.forEach(sec => {
+    if(sec.getBoundingClientRect().top < window.innerHeight - 100){
+      sec.classList.add("visible");
+    }
+  });
+}
+window.addEventListener("scroll", revealOnScroll);
+window.addEventListener("load", revealOnScroll);
+
+/* ========= Active nav highlight ========= */
+const navA = document.querySelectorAll(".nav-links a");
+function highlightNav(){
+  let current = "";
+  contentSections.forEach(sec => {
+    const sectionTop = sec.offsetTop;
+    if(pageYOffset >= sectionTop - 200){
+      current = sec.getAttribute("id");
+    }
+  });
+  
+  navA.forEach(a => {
+    a.classList.remove("active");
+    if(a.getAttribute("href") === "#" + current){
+      a.classList.add("active");
+    }
+  });
+}
+window.addEventListener("scroll", highlightNav);
+window.addEventListener("load", highlightNav);
+
+/* ========= Language ========= */
+const navLangBtn = document.getElementById("langBtn");
+const btnEN = document.getElementById("langEN");
+const btnKR = document.getElementById("langKR");
+const transEls = Array.from(document.querySelectorAll("[data-en]"));
+
+function setLang(lang){
+  requestAnimationFrame(() => {
+    transEls.forEach(el => {
+      el.innerHTML = (lang === "kr") ? el.dataset.kr : el.dataset.en;
+    });
+    navLangBtn.innerText = (lang === "kr") ? "KR" : "EN";
+    if(lang === "kr"){
+      btnKR.classList.add("is-active"); btnKR.setAttribute("aria-pressed","true");
+      btnEN.classList.remove("is-active"); btnEN.setAttribute("aria-pressed","false");
+    } else {
+      btnEN.classList.add("is-active"); btnEN.setAttribute("aria-pressed","true");
+      btnKR.classList.remove("is-active"); btnKR.setAttribute("aria-pressed","false");
+    }
+  });
+}
+
+function toggleLang(){
+  setLang(navLangBtn.innerText.trim().toLowerCase() === "kr" ? "en" : "kr");
+}
+
+function chooseLangAndEnter(lang){
+  setLang(lang);
+  endOpening();
+}
+
+btnEN.addEventListener("click", () => chooseLangAndEnter("en"));
+btnKR.addEventListener("click", () => chooseLangAndEnter("kr"));
+navLangBtn.addEventListener("click", toggleLang);
+
+// Initialize
+window.addEventListener('load', () => {
+  page.style.opacity = "1";
+});
+</script>
+</body>
+</html>
